@@ -1,0 +1,62 @@
+---
+title: "Assignment1-text"
+author: "Pauravi Wagh"
+date: "1/16/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### 1. Find the sid and age of each sailor.   
+Ans: {(s.sid, s.rating)| Sailor(s)}
+
+### 2. Find the sid, name, and rating of each sailor whose rating is in the range [2; 11] but not in the range [8; 10].  
+Ans: {(s.sid, s.sname, s.rating) | Sailor(s) $\land$ ((s.rating $\ge$ 2 $\land$ s.rating < 8) $\lor$ (s.rating > 10 $\land$ s.rating $\le$ 11 ))   }
+
+
+### 3. Find the bid, name, and color of each non-red boat that was reserved by some sailor whose rating is more than 7.  
+Ans : {(b.bid, b.bname, b.color) | Boat(b)  $\land$ $\exists$r$\exists$s(Reserves(r)   $\land$ Sailor(s) $\land$ b.bid = r.bid $\land$ s.sid = r.sid $\land$ s.rating > 7 $\land$ b.color $\ne$ 'red' )}  
+
+
+
+### 4. Find the bid and name of each boat that was reserved by a sailor on a weekend day but that was not reserved by a sailor on a Tuesday.  
+Ans : {(b.bid, b.bname) | Boat(b) $\land$ $\exists$$r_1$(Reserves($r_1$) $\land$ $r_1$.bid = b.bid $\land$ ($r_1$.day = 'Saturday' $\lor$ $r_1$.day = 'Sunday') ) $\land$ $\neg$($\exists$$r_2$(Reserves($r_2$) $\land$ $r_2$.bid = b.bid $\land$ $r_2$.day = 'Tuesday')) }
+
+
+### 5. Find the sid of each sailor who reserved both a red boat and a green boat.  
+Ans:{$(r_1.sid) | Reserves(r_1) \land \exists b_1(Boat(b_1) \land b_1.bid = r_1.bid \land b1.color = 'red') \land \exists r_2(Reserves(r_2) \land \exists b_2(Boat(b_2) \land b2.bid = r2.bid \land r1.bid = r2.bid \land b2.color = 'green'))$} 
+
+
+
+
+### 6. Find the sid and name of each sailor who reserved at least two different boats. (You should write this query without using the COUNT aggregate function.)  
+Ans: {$(s.sid, s.name) | sailor(s)\land \exists r_1(Reserves(r_1)  \land \exists r_2( Reserves(r_2) \land s.sid=r1.sid \land s.sid = r2.sid \land r1.bid \ne r2.bid))$}
+
+
+
+### 7. Find the pairs of sids (s1; s2) of different sailors who both reserved a same boat.  
+Ans: {$(r_1.sid, r_2.sid ) | Reserves(r_1) \land Reserves(r_2) \land r_1.sid \ne r_2.sid \land r_1.bid = r_2.bid$}
+
+
+
+### 8. Find the sid of each sailor who did not reserve any boats on a Monday or on a Tuesday.  
+Ans: {$(s.sid)| sailor(s) \land \neg (\exists r(Reserves(r) \land r.sid = s.sid \land (r.day = 'Monday' \lor r.day = 'Tuesday')))$}
+
+
+### 9. Find the pairs (s; b) such that the sailor with sid s reserved the boat with bid b, provided that the sailor s has a rating greater than 6 and the color of boat b is not red.  
+{$(s.sid, b.bid) | Sailor(s) \land Boat(b) \land \exists r(Reserves(r) \land r.sid = s.sid \land b.bid = r.bid \land s.rating > 6 \land b.color \ne 'red')$}
+
+
+### 10. Find the bid of each boat that where reserved by just one sailor. (You should write this query without using the COUNT aggregate function.)  
+Ans:  
+{$(r_1.bid)| Reserves(r_1) \land  \neg( \exists r_2( Reserves(r_2) \land r_1.bid = r_2.bid \land r_1.sid \ne r_2.sid ))$)}
+
+### 11. Find the sid of each sailor who reserved fewer than 3 boats. (You should write this query without using the COUNT aggregate function.)
+Ans:
+
+{$(s.sid) | Sailor(s) \land \neg(\exists r_1(Reserves(r_1) \land \exists r_2(Reserves(r_2) \land \exists r_3(Reserves(r_3) \land r_1.sid = s.sid \land r_2.sid = s.sid \land s.sid = r_3.sid  \land r_1.bid \ne r_2.bid \land r_2.bid \ne r_3.bid \land r_1.bid \ne r_3.bid))))$}
+
+

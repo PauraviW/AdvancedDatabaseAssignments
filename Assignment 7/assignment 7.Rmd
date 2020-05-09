@@ -1,0 +1,61 @@
+---
+title: "assignment 7"
+author: "Pauravi Wagh"
+date: "4/11/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+  
+###  Question 6.a:      
+
+  ![ER Diagram]("ER.jpg")
+  
+Assumptions of the diagram:  
+All the relations are many to many  
+1) Student can buy multiple books - Book bought by multiple students  
+2) Student can enroll in multiple courses - Course enrolled by multiple students  
+3) Book can cite multiple books - Book cited by multiple books  
+4) Student can have multiple majors - Multiple students can have same major.  (Major is an entity which has an attribute major, majors is a relation.)
+
+\pagebreak  
+
+### Question 6.b:  
+
+  ![Graph Property Diagram]("Graph property.jpg")
+   
+### Question 7.a:  
+
+    
+    MATCH (:Student )-[r]->()
+    RETURN type(r)
+
+
+### Question 7.b:  
+    
+    MATCH (s:Student {sname: "John"})-[:Buys]->(b:Book) 
+    WHERE b.price >= 50 
+    RETURN s
+  
+### Question 7.c:   
+    
+    MATCH(s:Student) - [:Buys] ->(b:Book),
+    (b)-[:cites]->(b1:Book)
+    WHERE b1.price >= 50
+    RETURN s
+
+### Question 7.d
+    
+    MATCH(b:Book)-[:cites*]->(b1:Book)
+    WHERE b.price > 50
+    RETURN b1
+    
+### Question 7.e
+    
+    MATCH(b:Book) <- [:Buys] -(s:Student),
+    (s)-[:majors]->(m:Major{major:'Math'}),
+    (s)-[:majors]->(m1:Major{major : 'CS'})
+    RETURN b, count (s) 
+    

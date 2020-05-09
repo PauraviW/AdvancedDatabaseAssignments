@@ -1,0 +1,151 @@
+\documentstyle{article}
+
+\begin{document}
+\begin{center}{\large B561 Assignment 1}
+
+\medskip
+{\large Relational Databases and Basic SQL queries}
+
+\medskip
+{Due: Wednesday January 22,  2020 by 11:45 pm}
+\end{center}
+\bigskip
+
+
+The goal of this assignment is to become familiar with the PostgreSQL system, 
+to create a relational database, and to write and evaluate some simple SQL statements and queries in that system.
+
+You need to upload a single file with name {\tt assignment1.sql} file to Canvas which contains the necessary SQL statements that solve the problems in this assignment.   
+The {\tt assignment1.sql} file must be so that the AI's can run it in their PostgreSQL shell.  (We will post a sample .sql file that gives the template for your {\tt ssignment1.sql} file.)
+
+Before you can solve this assignment, you will need download PostgreSQL (version 10) and install it on your computer.
+
+\bigskip
+Consider the following relation schemas for a database that maintains
+sailors, boats, and reservations of boats by sailors.
+
+{\small
+\[\mbox{\tt
+\begin{tabular}{l}
+  {\tt Sailor}($\underline{\rm {\tt sid}}$ integer, sname text, rating integer) \\
+  {\tt Boat}($\underline{\rm {\tt bid}}$ integer, bname text, color text) \\
+  {\tt Reserves}($\underline{\rm {\tt sid}}$ integer, $\underline{\rm {\tt bid}}$ integer, day text)
+ \end{tabular}}
+\]
+}
+
+You should assume that {\tt sid} in {\tt Reserves} is a foreign key that references
+the primary key {\tt sid} in {\tt Sailor}, and that {\tt bid} in {\tt Reserves} is a foreign key that 
+references the primary key {\tt bid} in {\tt Boat}.
+
+
+Note the files {\tt {\tt sailor}.sql}, {\tt {\tt boat}.sql}, and {\tt {\tt reserves}.sql}
+that contain the relation instances for the {\tt Sailor}, {\tt Boat}, and {\tt Reserves}
+relations that are supplied with this assignment.
+
+\section{Database creation and impact of constraints on INSERT and DELETE statements.}
+\begin{enumerate}
+\item Create a database with name{\tt\ assignment1} in PostgreSQL that stores these relations.
+  Make sure to specify primary and foreign keys.
+  Then write SQL queries that return each of the relation instances {\tt Sailor}, {\tt Boat}, and {\tt Reserves}.
+\item Provide 6 examples that illustrate how the presence or absence of primary and
+  foreign keys affects insert and deletes in these relations.   To solve this problem,
+  you will need to experiment with the  {\tt Sailor}, {\tt Boat}, and {\tt Reserves} relation schemas and instances.   For example, 
+  you should consider altering primary keys and foreign key constraints and
+  then consider various sequences of insert and delete operations.   You may also need to change some of the
+  relation instances.
+  Certain inserts and deletes should succeed but other should create error conditions.
+  (Consider the lecture notes about keys, foreign keys, and inserts and deletes as a guide to solve this problem.)
+  \end{enumerate}
+%  \newpage
+  \section{Formulating queries in SQL}\label{SQLQueries}
+Write SQL statements for the following queries.   For this assignment,
+make sure to always use  tuple variables in your SQL statements.    
+For example, in formulating the query ``Find the name of each boat" you should write the query
+
+\begin{center}{\tt
+\begin{tabular}{ll}
+SELECT &b.bname\\
+FROM & Boat b
+\end{tabular}}
+\end{center}
+instead of
+\begin{center}{\tt
+\begin{tabular}{ll}
+SELECT &bname\\
+FROM & Boat 
+\end{tabular}}
+\end{center}
+
+Make sure that each of your queries returns a set but not a bag.  In other words, make appropriate use of the
+{\tt DISTINCT} clause where necessary.
+\begin{enumerate}
+%\item Find the name of each sailor.
+\item Find the {\tt sid} and {age} of each sailor.
+\item Find the {\tt sid}, name, and rating of each sailor whose rating is in the range $[2,11]$  but not in the range $[8,10]$.   
+\item Find the {\tt bid}, name, and color of each non-red boat that was                                          
+reserved by some sailor whose rating is more than 7.  
+\item Find the {\tt bid} and name of each boat that was reserved by a sailor on                                  
+a weekend day but that was not reserved by a sailor on a Tuesday. 
+\item Find the {\tt sid} of each sailor who reserved both a red boat and a green boat.
+\item Find the {\tt sid} and name of each each sailor who reserved at least two different boats.
+(You should write this query without using the {\tt COUNT} aggregate function.)
+\item Find the pairs of {\tt sid}s $(s_1,s_2)$ of different sailors who both reserved a same boat.
+\item Find the {\tt sid} of each sailor who did not reserve any boats on a Monday or on a Tuesday.
+\item Find the pairs $(s, b)$ such that the sailor with {\tt sid} $s$ reserved the boat with {\tt bid} $b$, provided
+that the sailor $s$ has a rating greater than $6$ and the color of boat $b$ is  not red.
+\item Find the {\tt bid} of each boat that where reserved by just one sailor.  (You should write this query without using the {\tt COUNT} aggregate function.)
+\item Find the {\tt sid} of each sailor who reserved fewer than 3 boats.
+ (You should write this query without using the {\tt COUNT} aggregate function.)
+\end{enumerate}
+
+
+\section{Formulating queries in Predicate Logic}
+
+For each query in Section~\ref{SQLQueries}, specify an expression in the Predicate Logic (also called Relational Calculus).
+This will illustrate how closely this logic is associated with SQL.
+
+To learn more about this logic, you can consult the book \emph{Database Management Systems} by
+Ramakrishnan and Gehrke which you can find online.
+
+You should upload your answers for these problems in a separate pdf file named
+{\tt Assignment1.pdf}.
+
+Assume that associated with each of the relation {\tt Sailor}, {\tt Boat}, and {\tt Reserves}, there is a predicate as follows:
+
+\begin{center}
+\begin{tabular}{ll}
+Relation & Predicate \\ \hline
+{\tt Sailor} & ${\tt Sailor}(x,y,z)$ \\
+{\tt Boat} & ${\tt Boat}(x,y,z)$ \\
+{\tt Sailor} & ${\tt Sailor}(x,y,z)$ \\
+\end{tabular}
+\end{center}
+
+As an example consider the query ``Find the {\tt bid} and name of each boat that was reserved by fewer than
+2 sailors."
+This query can be formulated in the Predicate Logic with \emph{domain variables} as follows\footnote{This logic is
+also called the Domain Relational Calculus.}:
+
+
+\[\{
+(b,n) \,|\, \exists c\, {\tt Boat}(b,n,c) \land 
+\lnot(\exists s_1\exists d_1\exists s_2\exists d_2({\tt Reserves}(s_1,b,d_1)\land {\tt Reserves}(s_2,b,d_2)\land s_1\neq s_2)
+\}.\]
+
+
+And alternative formulation using a Predicate Logic with \emph{tuple variables} is as follows and is more inline with the
+SQL formulation:\footnote{This logic is
+also called the Tuple Relational Calculus.}:
+
+{\small
+\[
+\begin{array}{ll}
+\{({\bf b}.{\tt bid},{\bf b}.{\tt bname}) \,|\, {\tt Boat}({\bf b}) \land \\
+\qquad\lnot(\exists {\bf r}_1\exists {\bf r}_2({\tt Reserves}({\bf r}_1)\land {\tt Reserves}({\bf r}_2)
+\land {\bf r}_1.{\tt bid} = {\bf b}.{\tt bid} \land {\tt r}_2.{\tt bid} = {\bf b}.{\tt bid} \land {\tt r}_1.{\tt sid} \neq {\bf r}_2.{\tt sid})\}.
+\end{array}
+\]
+}
+
+\end{document}

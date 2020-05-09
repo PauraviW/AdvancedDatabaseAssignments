@@ -1,0 +1,1562 @@
+
+CREATE DATABASE
+You are now connected to database "pwassignment4" as user "postgres".
+
+question 1 a.
+Primary key constraint on Primary key
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+INSERT 0 1
+duplicate primary key
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:26: ERROR:  Primary key sid already exists!
+CONTEXT:  PL/pgSQL function check_primary_key_student() line 4 at RAISE
+ sid | sname | major
+-----+-------+-------
+   1 | Mary  | CS
+(1 row)
+
+
+INSERT 0 1
+ sid | sname |  major
+-----+-------+---------
+   1 | Mary  | CS
+   2 | Rose  | Biology
+(2 rows)
+
+
+
+primary key contraint on Course relation
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+INSERT 0 1
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:51: ERROR:  Primary key cno already exists!
+CONTEXT:  PL/pgSQL function check_primary_key_course() line 4 at RAISE
+INSERT 0 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+(2 rows)
+
+
+Non duplicate primary key
+INSERT 0 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1002 | AI                        |     5 |  20
+(3 rows)
+
+
+question 1 b
+
+Foreign key constraint on prerequisite table
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ cno | prereq
+-----+--------
+(0 rows)
+
+
+
+Case 1: Both the cno and prereq are in the course table. Insert should happen
+INSERT 0 1
+
+Case 2: Cno is in the Course table and prereq is not in the course table. Insert should not happen
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:87: ERROR:  Foreign key constraint not satisfied.Course table does not have an entry for the prerequisite course = 1003
+CONTEXT:  PL/pgSQL function check_fk_prerequisite() line 7 at RAISE
+
+Case 3: prereq is in the Course table and  Cno is not in the course table. Insert should not happen
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:90: ERROR:  Foreign key constraint not satisfied. Course table does not have an entry for the course = 1003
+CONTEXT:  PL/pgSQL function check_fk_prerequisite() line 4 at RAISE
+
+Case 4: Both the cno and prereq are in the course table. Insert should not happen
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:93: ERROR:  Foreign key constraint not satisfied. Course table does not have an entry for the course = 1007
+CONTEXT:  PL/pgSQL function check_fk_prerequisite() line 4 at RAISE
+ cno  | prereq
+------+--------
+ 1001 |   1002
+(1 row)
+
+
+Delete constraint on course table(Cascading delete operations should happen on the prerequisite table)
+In this case, if any cno is deleted from the course table then its entry either as a main course or the prerequite course should get deleted from the prerequisite table
+CREATE FUNCTION
+CREATE TRIGGER
+insert courses 1003, 1004, 1005 and 1006 in the course table
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+current state prerequisite table
+ cno  | prereq
+------+--------
+ 1001 |   1002
+ 1005 |   1004
+(2 rows)
+
+
+current state course table
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1002 | AI                        |     5 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1006 | Anthropology              |     5 |  20
+(7 rows)
+
+
+delete from course table value 1006. This value is not in the prerequisite table so gets deleted skipping the trigger condition
+DELETE 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1002 | AI                        |     5 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+(6 rows)
+
+
+As we can see that not changes are done to the prerequiste table
+ cno  | prereq
+------+--------
+ 1001 |   1002
+ 1005 |   1004
+(2 rows)
+
+
+deleting from course table value that is present in the prerequisite table. So now we see that this entry should get deleted from the prerequisite table too
+DELETE 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+(5 rows)
+
+
+updated prerequisite table.
+ cno  | prereq
+------+--------
+ 1005 |   1004
+(1 row)
+
+
+
+
+foreign key constraint on has taken table
+insert
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+initial state of hastaken
+ sid | cno
+-----+-----
+(0 rows)
+
+
+table student and course
+ sid | sname |  major
+-----+-------+---------
+   1 | Mary  | CS
+   2 | Rose  | Biology
+(2 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+(5 rows)
+
+
+
+insert in has taken table values present in the student and the course table(1,1001)
+
+INSERT 0 1
+
+insert in has taken table values  not present in the student and but present in the course table(8,1001)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:171: ERROR:  Entry not present in the Student table for sid =8
+CONTEXT:  PL/pgSQL function check_fk_constraint_hastaken() line 4 at RAISE
+
+insert in has taken table values present in the student and but not present in the course table(1,1009)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:175: ERROR:  Entry not present in the Course table for cno = 1009
+CONTEXT:  PL/pgSQL function check_fk_constraint_hastaken() line 7 at RAISE
+
+insert in has taken table values not present in the student and  not present in the course table(10,1009)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:179: ERROR:  Entry not present in the Student table for sid =10
+CONTEXT:  PL/pgSQL function check_fk_constraint_hastaken() line 4 at RAISE
+
+updates state of hastaken. only 1,1001 should be present in the table
+
+ sid | cno
+-----+------
+   1 | 1001
+(1 row)
+
+
+
+
+We can write a delete cascade trigger for the hastaken table here. But we omit that because later in question 1 c we have to prohibit deletions from the hastaken table.Thus not creating a cascade trigger here
+
+
+foreign key constraint on Enroll table
+insert
+
+In this case, we also maintain a global table that has one boolean value indicating whether the enrollment has started or not.
+So whenever, any attempt for enrollment is made, which indicates that the enrollment is started, we set it to true.
+CREATE TABLE
+CREATE TABLE
+INSERT 0 1
+CREATE FUNCTION
+CREATE TRIGGER
+initial state of enroll
+ sid | cno
+-----+-----
+(0 rows)
+
+
+table student and course
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ sid | sname |       major
+-----+-------+-------------------
+   1 | Mary  | CS
+   2 | Rose  | Biology
+  25 | Steve | Quantum Mechanics
+  26 | Tina  | Geology
+(4 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+(7 rows)
+
+
+
+insert in enroll table values present in the student and the course table(25,1050)
+
+INSERT 0 1
+
+insert in enroll table values  not present in the student and but present in the course table(27,1050)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:235: ERROR:  Entry not present in the Student table for sid =27
+CONTEXT:  PL/pgSQL function check_fk_constraint_enroll() line 4 at RAISE
+
+insert in enroll table values present in the student and but not present in the course table(25,1053)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:239: ERROR:  Entry not present in the Course table for cno = 1053
+CONTEXT:  PL/pgSQL function check_fk_constraint_enroll() line 7 at RAISE
+
+insert in enroll table values not present in the student and  not present in the course table(27,1053)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:243: ERROR:  Entry not present in the Student table for sid =27
+CONTEXT:  PL/pgSQL function check_fk_constraint_enroll() line 4 at RAISE
+
+updates state of enroll. only 25, 1050 should be present in the table
+
+ sid | cno
+-----+------
+  25 | 1050
+(1 row)
+
+
+
+delete foreign key check on enroll table
+
+If the attribute is present in the enroll table and if it is deleted from either the student or the course table then its entry should get deletd from the enroll table too.
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+CREATE FUNCTION
+CREATE TRIGGER
+ current state of student table
+ sid | sname  |       major
+-----+--------+-------------------
+   1 | Mary   | CS
+   2 | Rose   | Biology
+  25 | Steve  | Quantum Mechanics
+  26 | Tina   | Geology
+  27 | Rajesh | Geometry
+  28 | Raj    | Hindi
+  29 | Tom    | Hindi
+(7 rows)
+
+
+
+ current state of enroll table
+ sid | cno
+-----+------
+  25 | 1050
+  27 | 1050
+  27 | 1051
+(3 rows)
+
+
+
+ delete from student value where sid is not present in the enroll table(sid = 29)
+DELETE 1
+ sid | sname  |       major
+-----+--------+-------------------
+   1 | Mary   | CS
+   2 | Rose   | Biology
+  25 | Steve  | Quantum Mechanics
+  26 | Tina   | Geology
+  27 | Rajesh | Geometry
+  28 | Raj    | Hindi
+(6 rows)
+
+
+ sid | cno
+-----+------
+  25 | 1050
+  27 | 1050
+  27 | 1051
+(3 rows)
+
+
+
+ delete from student value where sid is  present in the enroll table(sid = 27)
+DELETE 1
+ sid | sname |       major
+-----+-------+-------------------
+   1 | Mary  | CS
+   2 | Rose  | Biology
+  25 | Steve | Quantum Mechanics
+  26 | Tina  | Geology
+  28 | Raj   | Hindi
+(5 rows)
+
+
+ sid | cno
+-----+------
+  25 | 1050
+(1 row)
+
+
+
+ updated status of student and enroll tables
+ sid | sname |       major
+-----+-------+-------------------
+   1 | Mary  | CS
+   2 | Rose  | Biology
+  25 | Steve | Quantum Mechanics
+  26 | Tina  | Geology
+  28 | Raj   | Hindi
+(5 rows)
+
+
+ sid | cno
+-----+------
+  25 | 1050
+(1 row)
+
+
+delete check for course table
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+
+CREATE FUNCTION
+CREATE TRIGGER
+ current state of course table
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1057 | English                   |     5 |  20
+ 1058 | Economics                 |     5 |  20
+(9 rows)
+
+
+
+ current state of enroll table
+ sid | cno
+-----+------
+  25 | 1050
+  25 | 1057
+  28 | 1057
+(3 rows)
+
+
+
+ delete from course value where cno is not present in the enroll table(cno = 1058)
+DELETE 1
+ current state of course table
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1057 | English                   |     5 |  20
+(8 rows)
+
+
+
+ current state of enroll table
+ sid | cno
+-----+------
+  25 | 1050
+  25 | 1057
+  28 | 1057
+(3 rows)
+
+
+
+
+ delete from course value where cno is  present in the enroll table(cno = 1057)
+DELETE 1
+
+ updated status of course and enroll tables
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+(7 rows)
+
+
+ sid | cno
+-----+------
+  25 | 1050
+(1 row)
+
+
+
+foreign key check on waitlist table
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+initial state of waitlist
+ sid | cno | position
+-----+-----+----------
+(0 rows)
+
+
+table student and course
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ sid | sname  |       major
+-----+--------+-------------------
+   1 | Mary   | CS
+   2 | Rose   | Biology
+  25 | Steve  | Quantum Mechanics
+  26 | Tina   | Geology
+  28 | Raj    | Hindi
+  30 | Steven | Quantum Mechanics
+  31 | Nita   | Geology
+(7 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+(9 rows)
+
+
+
+insert in waitlist table values present in the student and the course table(30,1060)
+
+INSERT 0 1
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+
+insert in waitlist table values  not present in the student and but present in the course table(40,1060)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:381: ERROR:  Entry not present in the Student table for sid =40
+CONTEXT:  PL/pgSQL function check_fk_constraint_waitlist() line 4 at RAISE
+
+insert in waitlist table values present in the student and but not present in the course table(30, 1073)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:385: ERROR:  Entry not present in the Course table for cno = 1073
+CONTEXT:  PL/pgSQL function check_fk_constraint_waitlist() line 7 at RAISE
+
+insert in waitlist table values not present in the student and  not present in the course table(40, 1073)
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:389: ERROR:  Entry not present in the Student table for sid =40
+CONTEXT:  PL/pgSQL function check_fk_constraint_waitlist() line 4 at RAISE
+
+updates state of waitlist. only (30, 1060, 1) should be present in the table
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+
+delete foreign key check on waitlist table
+
+if the attribute is present in the waitlist table and if it is deleted from either the student or the course table then its entry should get deletd from the waitlist table too.
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+CREATE FUNCTION
+CREATE TRIGGER
+ current state of student table
+ sid | sname  |       major
+-----+--------+-------------------
+   1 | Mary   | CS
+   2 | Rose   | Biology
+  25 | Steve  | Quantum Mechanics
+  26 | Tina   | Geology
+  28 | Raj    | Hindi
+  30 | Steven | Quantum Mechanics
+  31 | Nita   | Geology
+  32 | Harold | Geometry
+  33 | Kumar  | Hindi
+  34 | Nick   | Physics
+(10 rows)
+
+
+
+ current state of waitlist table
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+  32 | 1060 |        1
+  32 | 1061 |        2
+(3 rows)
+
+
+
+ delete from student value where sid is not present in the waitlist table(sid = 34)
+DELETE 1
+
+ delete from student value where sid is  present in the waitlist table(sid = 32)
+DELETE 1
+
+ updated status of student and waitlist tables
+ sid | sname  |       major
+-----+--------+-------------------
+   1 | Mary   | CS
+   2 | Rose   | Biology
+  25 | Steve  | Quantum Mechanics
+  26 | Tina   | Geology
+  28 | Raj    | Hindi
+  30 | Steven | Quantum Mechanics
+  31 | Nita   | Geology
+  33 | Kumar  | Hindi
+(8 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+delete check for course table
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+
+delete from waitlist trigger
+CREATE FUNCTION
+CREATE TRIGGER
+ current state of course table
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1062 | Deep Learning             |     5 |  20
+ 1063 | HCI                       |     5 |  20
+(11 rows)
+
+
+
+ current state of waitlist table
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+  33 | 1062 |       70
+  30 | 1062 |       80
+(3 rows)
+
+
+
+ delete from course value where cno is not present in the waitlist table(cno = 1063)
+DELETE 1
+ current state of course table
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1062 | Deep Learning             |     5 |  20
+(10 rows)
+
+
+
+ current state of waitlist table
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+  33 | 1062 |       70
+  30 | 1062 |       80
+(3 rows)
+
+
+
+
+ delete from course value where cno is  present in the waitlist table(cno = 1062)
+DELETE 1
+
+ updated status of course and waitlist tables
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+(9 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+
+1.c
+Trigger that bans a delete operation on the hastaken table
+CREATE FUNCTION
+CREATE TRIGGER
+current status of hastaken table
+ sid | cno
+-----+------
+   1 | 1001
+(1 row)
+
+
+INSERT 0 1
+delete operation on hastaken
+
+Deleting student
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:510: ERROR:  Delete not permitted on hastaken table
+CONTEXT:  PL/pgSQL function delete_not_permitted_hastaken() line 3 at RAISE
+
+ sid | cno
+-----+------
+   1 | 1001
+  25 | 1003
+(2 rows)
+
+
+
+Deleting course
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:515: ERROR:  Delete not permitted on hastaken table
+CONTEXT:  PL/pgSQL function delete_not_permitted_hastaken() line 3 at RAISE
+
+ sid | cno
+-----+------
+   1 | 1001
+  25 | 1003
+(2 rows)
+
+
+ Insert valid value
+INSERT 0 1
+
+We have a special condition on hastaken that is, values can only be inserted on hastaken table before enrollment has begun.So for this case, I create a global table enrollment status, which will get activated when enrolment starts that is basically when the value of the variable in the enrollmentstatis is false else no insertion is allowed
+Check if enrollment status is set to false and then insert accordingly in the hastaken table
+DELETE 1
+CREATE FUNCTION
+CREATE TRIGGER
+UPDATE 1
+Now we have explicitly set the enrollment started value to false, so insertion in the hastaken table should be succesful
+INSERT 0 1
+table hastaken
+ sid | cno
+-----+------
+   1 | 1001
+  25 | 1003
+  31 | 1001
+  28 | 1003
+(4 rows)
+
+
+insert values in the enroll table
+INSERT 0 1
+
+ This insertion in enroll table, will set the value of the global variable to true, indicating that no more insertions on the hastaken table asre allowed after this.
+
+table enroll
+ sid | cno
+-----+------
+  28 | 1003
+(1 row)
+
+
+
+now try inserting values in hastaken table, should give an error
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:559: ERROR:  Insert not allowed since enrollment has begun
+CONTEXT:  PL/pgSQL function check_if_insert_allowed_on_hastaken() line 4 at RAISE
+table hastaken
+ sid | cno
+-----+------
+   1 | 1001
+  25 | 1003
+  31 | 1001
+  28 | 1003
+(4 rows)
+
+
+1.d
+Delete operation on Course Table
+CREATE FUNCTION
+CREATE TRIGGER
+
+Delete operation on the Course table should give an error
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+(9 rows)
+
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:582: ERROR:  Cannot delete from Course Table
+CONTEXT:  PL/pgSQL function prohibit_deletion_course() line 3 at RAISE
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1001 | Advanced Database Systems |    15 |  50
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+(9 rows)
+
+
+
+delete prohibited on prerequisite course
+CREATE FUNCTION
+CREATE TRIGGER
+
+Delete operation on the prerequisite table should give an error
+
+ cno  | prereq
+------+--------
+ 1005 |   1004
+(1 row)
+
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:605: ERROR:  Cannot delete from prerequisite Table
+CONTEXT:  PL/pgSQL function prohibit_deletion_prerequisite() line 3 at RAISE
+ cno  | prereq
+------+--------
+ 1005 |   1004
+(1 row)
+
+
+
+ trigger to stop adding/ updating the course table once the enrollment starts
+
+In this case, we see that the if the enrollment has started then we are no longer allowed to add into the course table.
+CREATE FUNCTION
+CREATE TRIGGER
+Right now the enrollment status is set to true, so addition/updation should not be allowed on course table
+
+insert
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:630: ERROR:  Addition not allowed on Course table
+CONTEXT:  PL/pgSQL function check_insert_allowed_course() line 4 at RAISE
+
+update
+UPDATE 1
+ Now set the enrollment status to false and we can perform addition and updation on the Course table
+DELETE 1
+UPDATE 1
+insert
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+(9 rows)
+
+
+Inserting course biology in the course table
+INSERT 0 1
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+(10 rows)
+
+
+
+update
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1004 | Statistics                |     5 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+(10 rows)
+
+
+updating the total enrollment of course 1004 to 6
+UPDATE 1
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+ 1004 | Statistics                |     6 |  20
+(10 rows)
+
+
+ trigger to stop adding/ updating the prerequisite table once the enrollment starts
+
+In this case, what we do is we check the status of the enrollment started table to know if we can update the prerequisite table or not.
+CREATE FUNCTION
+CREATE TRIGGER
+INSERT 0 1
+
+ cno  | prereq
+------+--------
+ 1005 |   1004
+(1 row)
+
+
+Right now enrollment has started, so addition/updation should not be allowed on prerequisite table
+
+insert
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:679: ERROR:  Addition/Updation not allowed on prerequisite table as the enrollment has begun
+CONTEXT:  PL/pgSQL function check_insert_allowed_prerequisite() line 4 at RAISE
+
+update
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:682: ERROR:  Addition/Updation not allowed on prerequisite table as the enrollment has begun
+CONTEXT:  PL/pgSQL function check_insert_allowed_prerequisite() line 4 at RAISE
+
+ Now I set the enrollment started variable to false, to indicate that the enrollment has stopped.And now I perform addition and insertion on the prerequisite table
+UPDATE 1
+Addition and updation should work now
+DELETE 1
+table prerequisite
+ cno  | prereq
+------+--------
+ 1005 |   1004
+(1 row)
+
+
+insert
+Insert a new record(1001, 1061)
+INSERT 0 1
+table prerequisite
+ cno  | prereq
+------+--------
+ 1005 |   1004
+ 1001 |   1061
+(2 rows)
+
+
+
+update
+updating record a new record with cno 1005
+table prerequisite
+ cno  | prereq
+------+--------
+ 1005 |   1004
+ 1001 |   1061
+(2 rows)
+
+
+UPDATE 1
+
+table prerequisite
+ cno  | prereq
+------+--------
+ 1001 |   1061
+ 1005 |   1061
+(2 rows)
+
+
+
+
+question 2
+
+Trigger to let a student enroll only if he/she has taken all the prerequisite courses for that course and updating the waitlist and course tables if needed.
+
+Here we first check if all the prerequisites have been taken or not. If yes then only add the student in the enroll table or in the waitlist table
+
+If prerequistes are satisfied then check if there is any space left for the course, if yes then add the student in the enrollment table and update the total enrollment of the course by 1. If not then add the student to the waitlist tble
+CREATE FUNCTION
+CREATE TRIGGER
+INSERT 0 1
+DELETE 0
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+I inserted two students in the student table who wish to take the data mining course 1080. That course has 2 prerequisites 1061 and 1062. Student with sid 100 has taken all the pre-requisites  but student 101 has taken only one of the prerequisite courses.
+ Consequently, the student 100 will get enrolled and 101 will not get enrolled and an exception will be raised.
+
+Student with prerequisites met sid = 100
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    19 |  20
+(11 rows)
+
+
+INSERT 0 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+(11 rows)
+
+
+
+Student with prerequisites met sid = 100
+ sid | cno
+-----+------
+ 100 | 1080
+(1 row)
+
+
+
+Student with prerequisites not met sid = 101
+
+psql:D:/courses sem 2/ADC/Assignment 4/assignment4.sql:784: ERROR:  All prerequisites not taken. Student cannot be enrolled. Sid = 101
+CONTEXT:  PL/pgSQL function check_all_prerequistes_completed() line 11 at RAISE
+
+ sid | cno
+-----+------
+ 100 | 1080
+(1 row)
+
+
+DELETE 1
+ Before enforcing the delete updates on the enroll table, I will test if the insert constrainst on the enroll and waitlist table work properly or not.
+For that I try enrolling a student for the 1080 course which for which the maximum enrollment number has been reached. In this case, the person should get added in the waitlist table with the next available waitlist position.
+
+I will test this on 2 conditions
+Condition 1: I will check if the course(1080) does not exist in the waitlist table then add the course in that table and set position to 1
+UPDATE 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+table waitlist before insertion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+INSERT 0 0
+table course to see that for the course 1080 maximum enrollment is reached.
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1050 | NLP                       |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1076 | Biology                   |    29 |  30
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+(11 rows)
+
+
+table enroll
+ sid | cno
+-----+-----
+(0 rows)
+
+
+table waitlist after insertion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 103 | 1080 |        1
+(2 rows)
+
+
+
+Condition 2: I will check if the course  exists in the table then update the  position to next number
+In this case, the student 104 cannot enroll in the course as the maximum enrollment has been reached. So we add him/her in the waitlist table and since, an entry for the same course is already present in the waitlist table, we update the position.
+UPDATE 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+table waitlist before insertion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 103 | 1080 |        1
+(2 rows)
+
+
+INSERT 0 0
+table enroll
+ sid | cno
+-----+-----
+(0 rows)
+
+
+table waitlist after insertion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 103 | 1080 |        1
+ 104 | 1080 |        2
+(3 rows)
+
+
+For the delete constraint on the waitlist table, I will consider the following cases
+case 1: When a student drops himself from the waitlist table, then he/she gets removed.
+
+ table waitlist before deletion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 103 | 1080 |        1
+ 104 | 1080 |        2
+(3 rows)
+
+
+
+DELETE 1
+
+ table waitlist after deletion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 104 | 1080 |        2
+(2 rows)
+
+
+
+DELETE 1
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+(1 row)
+
+
+
+example on multiple values
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ sid | cno
+-----+-----
+(0 rows)
+
+
+INSERT 0 1
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 1
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 104 | 1050 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+ 107 | 1076 |        1
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 104 | 1076 |        4
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(15 rows)
+
+
+ sid | cno
+-----+------
+ 103 | 1050
+ 108 | 1076
+(2 rows)
+
+
+DELETE 2
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+ 107 | 1076 |        1
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(13 rows)
+
+
+
+Enforcing the restrictions where I update the enroll and waitlist tables on the basis of the deletion of a student from the enroll table
+CREATE FUNCTION
+CREATE TRIGGER
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+(11 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+ 107 | 1076 |        1
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(13 rows)
+
+
+ sid | cno
+-----+------
+ 103 | 1050
+ 108 | 1076
+(2 rows)
+
+
+Deleting from enroll a student whose sid is 108, now since the student 108 was enrolled in the course 1076, he/she will be replaced by the next person on the waitlist having the mimimum position
+DELETE 1
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1003 | MLSP                      |    23 |  60
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+(11 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(12 rows)
+
+
+ sid | cno
+-----+------
+ 103 | 1050
+ 107 | 1076
+(2 rows)
+
+
+INSERT 0 1
+ sid | cno
+-----+------
+ 103 | 1050
+ 107 | 1076
+  33 | 1003
+(3 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+ 1003 | MLSP                      |    24 |  60
+(11 rows)
+
+
+In this case, since there are no students on the waiting list for the subjects(1003) taken by 33, we just decrease the enrollment number from the course table by 1.
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(12 rows)
+
+
+DELETE 1
+updated tables after deletion. We can see that sid = 33 is no longer in the enroll table and the total value for the course 1003 reduces by 1
+ sid | cno
+-----+------
+ 103 | 1050
+ 107 | 1076
+(2 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+ 1003 | MLSP                      |    23 |  60
+(11 rows)
+
+
+Now I will check for a specific student and a specific course that he/she wants to dropfrom the enroll table
+tables before deletion sid = 109 and cno = 1003
+INSERT 0 1
+ sid | cno
+-----+------
+ 103 | 1050
+ 107 | 1076
+ 109 | 1003
+(3 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+ 1003 | MLSP                      |    24 |  60
+(11 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(12 rows)
+
+
+DELETE 1
+tables after deletion only the enrolment table and the course table total for 1003 ahs changed.
+ sid | cno
+-----+------
+ 103 | 1050
+ 107 | 1076
+(2 rows)
+
+
+ cno  |           cname           | total | max
+------+---------------------------+-------+-----
+ 1083 | Drawing                   |    20 |  20
+ 1005 | Operating Systems         |    19 |  20
+ 1051 | CV                        |     5 |  20
+ 1060 | NLP                       |     5 |  20
+ 1061 | CV                        |     5 |  20
+ 1001 | Advanced Database Systems |     6 |  50
+ 1004 | Statistics                |     6 |  20
+ 1080 | Data Mining               |    20 |  20
+ 1050 | NLP                       |    20 |  20
+ 1076 | Biology                   |    30 |  30
+ 1003 | MLSP                      |    23 |  60
+(11 rows)
+
+
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(12 rows)
+
+
+Now I will check for a specific student and a specific course that he/she wants to drop from the waitlist table
+tables before deletion (sid = 105 and cno = 1076)
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 105 | 1076 |        5
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(12 rows)
+
+
+DELETE 1
+tables after deletion
+ sid | cno  | position
+-----+------+----------
+  30 | 1060 |        1
+ 107 | 1050 |        2
+ 105 | 1050 |        3
+ 106 | 1050 |        4
+  28 | 1076 |        2
+ 103 | 1076 |        3
+ 109 | 1076 |        6
+ 107 | 1083 |        1
+ 103 | 1083 |        2
+ 108 | 1083 |        3
+ 109 | 1083 |        4
+(11 rows)
+
+
+No changes will take place in the course and enrollment table
+question 3
+I have created  a table expected value to store the final values of n, expected value and the standard deviation.
+Firstly, I trigger an event throw using insert into table T function, where I do not insert anythinf in the table but use it to trigger the event. This generates the sum of random variables between 3-18 and then I send these values to the procedure written on the trigger. Then I calculate that using the previous values. If the data is not already present then I initialize it with expected value and the standard deviation for1 throw and subsequently i use the previous result to get the next values
+I create expec_Val table for storing the final values of the expected value and standard deviation
+CREATE TABLE
+I create this table T just to trigger the throw event
+CREATE TABLE
+expected_val function implements the standard deviation and expected value incrementally
+CREATE FUNCTION
+calc_exp_val is the trigget that calls the procedure to calculate the expected values
+CREATE TRIGGER
+expt is the function that throws and incrementally calculates the results n times. I put the results in the record variable and return it.
+CREATE FUNCTION
+  n   | expected_value | standard_deviation
+------+----------------+--------------------
+ 1000 |         10.749 |   3.97073504605257
+(1 row)
+
+
+DROP TABLE
+DROP TABLE
+DROP FUNCTION
+DROP FUNCTION
+You are now connected to database "postgres" as user "postgres".
+DROP DATABASE

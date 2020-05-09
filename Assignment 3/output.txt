@@ -1,0 +1,523 @@
+CREATE DATABASE
+You are now connected to database "pwassignment3" as user "postgres".
+CREATE TABLE
+CREATE TABLE
+INSERT 0 4
+INSERT 0 3
+
+question 1.a
+In this query, I check if there exists values after taking a difference of B from A and A from B and if there exists intersection or not and display the values accordingly
+
+ empty_a_minus_b | empty_b_minus_a | empty_a_intersection_b
+-----------------+-----------------+------------------------
+ f               | t               | f
+(1 row)
+
+
+
+ question 1.b
+In this query, I check if there does not exist a value in table A which is not in B, this gives me whether the result of the expression is null or not, I use the same for the B-A part and then I check if any element of A is in B, which automatically proves that A intersection B is an empty set or not.
+
+ empty_a_minus_b | empty_b_minus_a | empty_a_intersection_b
+-----------------+-----------------+------------------------
+ f               | t               | f
+(1 row)
+
+
+DROP TABLE
+DROP TABLE
+
+question 2
+ In this question, I converted the if--then statement into a statement with ands and ors and computed the Truth table on that basis.
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 3
+INSERT 0 3
+ p | q | r | value
+---+---+---+-------
+ t | t | t | f
+ t | t | f | t
+ t | t |   |
+ t | f | t | t
+ t | f | f | t
+ t | f |   | t
+ t |   | t |
+ t |   | f | t
+ t |   |   |
+ f | t | t | f
+ f | t | f | t
+ f | t |   |
+ f | f | t | f
+ f | f | f | t
+ f | f |   |
+ f |   | t | f
+ f |   | f | t
+ f |   |   |
+   | t | t | f
+   | t | f | t
+   | t |   |
+   | f | t |
+   | f | f | t
+   | f |   |
+   |   | t |
+   |   | f | t
+   |   |   |
+(27 rows)
+
+
+DROP TABLE
+DROP TABLE
+DROP TABLE
+
+question 3.a
+In this I have used the distance formula to calculate whether the distance between the two points is the least amongst distances between all the points
+
+CREATE TABLE
+INSERT 0 3
+
+ p1 | p2
+----+----
+  1 |  2
+  1 |  3
+  2 |  1
+  3 |  1
+(4 rows)
+
+
+
+question  3.b
+I have used the area of triangle formula to check of the area formed by the points is zero or not. If yes then the points are collinear.
+DROP TABLE
+CREATE TABLE
+INSERT 0 3
+ pid | pid | pid
+-----+-----+-----
+   1 |   2 |   3
+   1 |   3 |   2
+   2 |   1 |   3
+   2 |   3 |   1
+   3 |   1 |   2
+   3 |   2 |   1
+(6 rows)
+
+
+DROP TABLE
+question 4.a
+In this question, I have tried to identify where the given SET is has attribute A as its primary key or not by contructing a view, that converts the data into a set and then I check the condition that there should not exist two tuples with same primary key and different values for any of the other attributes.
+CREATE TABLE
+INSERT 0 3
+ isprimarykey
+--------------
+ t
+(1 row)
+
+
+DROP TABLE
+question 4.b
+ Relation with primary key
+CREATE TABLE
+INSERT 0 5
+ isprimarykey
+--------------
+ t
+(1 row)
+
+
+DROP TABLE
+Relation without primary key
+CREATE TABLE
+INSERT 0 3
+ isprimarykey
+--------------
+ f
+(1 row)
+
+
+DROP TABLE
+question 5
+ In this question, I created a function that calculates the M^2 value as needed. Then, I use another quesry to calculate the multiplication of the result obtined from that view and finally get the output
+CREATE TABLE
+INSERT 0 9
+CREATE VIEW
+ row | colmn | value
+-----+-------+-------
+   1 |     1 |   125
+   1 |     2 |   -48
+   1 |     3 |   305
+   2 |     1 |   556
+   2 |     2 |  -127
+   2 |     3 |  -468
+   3 |     1 |    20
+   3 |     2 |   232
+   3 |     3 |    52
+(9 rows)
+
+
+DROP VIEW
+DROP TABLE
+
+question 6
+I checked for the numbers which have equivalent remainders and then I grouped them together on the basis of the remainder value.
+CREATE TABLE
+INSERT 0 11
+ remainder | no_of_values
+-----------+--------------
+         0 |            2
+         1 |            3
+         2 |            3
+         3 |            3
+(4 rows)
+
+
+DROP TABLE
+
+question 7
+In this when I performed group by on the values, I immediately got a set out of the bag
+CREATE TABLE
+INSERT 0 7
+ x
+---
+ 1
+ 2
+ 3
+ 5
+(4 rows)
+
+
+DROP TABLE
+questions 8-16
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 9
+INSERT 0 9
+INSERT 0 1
+INSERT 0 14
+INSERT 0 3
+INSERT 0 2
+INSERT 0 37
+INSERT 0 30
+INSERT 0 44
+INSERT 0 10
+INSERT 0 19
+question 8.a
+In this query, I created a user defined function that returns the total number of times the book was bought by CS students. Then i use this to filter only those books that were bought less than 3 times and I also check for the price to be less than 40
+CREATE VIEW
+CREATE FUNCTION
+ bookno |        title
+--------+---------------------
+   2003 | Networks
+   2005 | DiscreteMathematics
+   2009 | Calculus
+   2010 | Philosophy
+   4001 | LinearAlgebra
+(5 rows)
+
+
+DROP VIEW
+question 8.b
+
+In this I first counted the number of books bought by students from the buys table and aggregating them and checking of they cose les than 200 and then I added the people who did not buy any book
+ sid  | sname | numberofbooksbought
+------+-------+---------------------
+ 1011 | Nick  |                   4
+ 1005 | John  |                   4
+ 1012 | Eric  |                   2
+ 1013 | Lisa  |                   3
+ 1008 | Emma  |                   4
+ 1020 | Ahmed |                   1
+ 1014 | Filip |                   3
+(7 rows)
+
+
+question 8.c
+
+In this question, I calculate the total money spent by each student on the the books he/she bought and then I compared it with others to see if it is the maximum
+ sid  | sname
+------+-------
+ 1015 | Dirk
+(1 row)
+
+
+question 8.d
+
+I first obtained students in each major.I then summed over the price of books bought in each major
+CREATE FUNCTION
+    major     | totalpriceofbooksbought
+--------------+-------------------------
+ Anthropology |                     215
+ Biology      |                     480
+ CS           |                    2080
+ Math         |                    1345
+ Physics      |                     750
+ Psychology   |                     170
+ Theater      |                     180
+(7 rows)
+
+
+DROP FUNCTION
+question 8.e
+I created a function that calculates the number of cs students who bought a book. Then I compared 2 books at a time to see for which books the count matched.
+CREATE FUNCTION
+  b1  |  b2
+------+------
+ 2001 | 2002
+ 2001 | 2008
+ 2001 | 2013
+ 2002 | 2001
+ 2002 | 2008
+ 2002 | 2013
+ 2003 | 2009
+ 2003 | 2010
+ 2004 | 2005
+ 2004 | 4001
+ 2004 | 4002
+ 2005 | 2004
+ 2005 | 4001
+ 2005 | 4002
+ 2006 | 4003
+ 2008 | 2001
+ 2008 | 2002
+ 2008 | 2013
+ 2009 | 2003
+ 2009 | 2010
+ 2010 | 2003
+ 2010 | 2009
+ 2013 | 2001
+ 2013 | 2002
+ 2013 | 2008
+ 4001 | 2004
+ 4001 | 2005
+ 4001 | 4002
+ 4002 | 2004
+ 4002 | 2005
+ 4002 | 4001
+ 4003 | 2006
+(32 rows)
+
+
+DROP FUNCTION
+question 9
+Here, I found names of students for whom there exists a book not bought by them that costs more than 50. So they did not buy all the books that cost more than 50
+CREATE VIEW
+CREATE FUNCTION
+ sid  |   sname
+------+-----------
+ 1001 | Jean
+ 1002 | Maria
+ 1003 | Anna
+ 1004 | Chin
+ 1005 | John
+ 1006 | Ryan
+ 1007 | Catherine
+ 1008 | Emma
+ 1009 | Jan
+ 1010 | Linda
+ 1011 | Nick
+ 1012 | Eric
+ 1013 | Lisa
+ 1014 | Filip
+ 1017 | Ellen
+ 1020 | Ahmed
+ 1021 | Kris
+(17 rows)
+
+
+DROP VIEW
+DROP FUNCTION
+
+question 10
+In this question I created 2 sets. One with students who bought a book and the other with students majoring in Cs or Math. Then, I subtracted Cs_math students from students who bought the book and if there exists such people who are not in CS and Math and have bought the book then those books were listed
+CREATE VIEW
+CREATE FUNCTION
+ bookno |        title
+--------+----------------------
+   2001 | Databases
+   2002 | OperatingSystems
+   2003 | Networks
+   2004 | AI
+   2007 | ProgrammingLanguages
+   2008 | DataScience
+   2011 | Anthropology
+   2012 | Geometry
+   2013 | RealAnalysis
+   3000 | MachineLearning
+   4001 | LinearAlgebra
+   4002 | MeasureTheory
+   4003 | OptimizationTheory
+(13 rows)
+
+
+DROP FUNCTION
+DROP VIEW
+question 11
+
+ Here I first created a view for the least expensive books. Then I created a function that returns a list of all thebooks bought by that student. I check the condition that there should not exist a book bought by that student which is least expensive. So the intersection should return null in this case. In this way I obtained the answer.
+CREATE VIEW
+CREATE FUNCTION
+ sid  | sname
+------+-------
+ 1002 | Maria
+ 1003 | Anna
+ 1004 | Chin
+ 1005 | John
+ 1006 | Ryan
+ 1008 | Emma
+ 1009 | Jan
+ 1010 | Linda
+ 1011 | Nick
+ 1012 | Eric
+ 1013 | Lisa
+ 1014 | Filip
+ 1015 | Dirk
+ 1016 | Mary
+ 1017 | Ellen
+ 1020 | Ahmed
+(16 rows)
+
+
+DROP VIEW
+DROP FUNCTION
+
+question 12
+ For this case to be true, we need to find CS students who have bought book1 and book 2 and when we find the difference it should be 0 for students buying book1 - students buying book2  and students buying book2 - students buying book1. I created a function to find CS students who bought the book and then ran 2 sets of book instances to find if the difference is null or not
+CREATE FUNCTION
+  b1  |  b2
+------+------
+ 2003 | 2009
+ 2003 | 2010
+ 2004 | 2005
+ 2004 | 4001
+ 2004 | 4002
+ 2005 | 2004
+ 2005 | 4001
+ 2005 | 4002
+ 2009 | 2003
+ 2009 | 2010
+ 2010 | 2003
+ 2010 | 2009
+ 4001 | 2004
+ 4001 | 2005
+ 4001 | 4002
+ 4002 | 2004
+ 4002 | 2005
+ 4002 | 4001
+(18 rows)
+
+
+DROP FUNCTION
+question 13
+In this question, I created a function that returns the booknos of books bought by Cs students and intersected it with the view that returns the books that cost less than 50. Then I counted the resulting set and if it is less than 4 or not and returned the results.
+CREATE FUNCTION
+CREATE VIEW
+ sid  | sname
+------+-------
+ 1004 | Chin
+ 1006 | Ryan
+ 1011 | Nick
+ 1012 | Eric
+ 1013 | Lisa
+(5 rows)
+
+
+DROP FUNCTION
+question 14
+
+In this question, I calculate the no of CS students buying the book . Using the count function I counted and divided it by 2 to check if the remainder is 0 or 1. To check if it is odd or even.
+CREATE FUNCTION
+CREATE VIEW
+ bookno |        title
+--------+----------------------
+   2004 | AI
+   2005 | DiscreteMathematics
+   2006 | SQL
+   2007 | ProgrammingLanguages
+   2012 | Geometry
+   4001 | LinearAlgebra
+   4002 | MeasureTheory
+   4003 | OptimizationTheory
+(8 rows)
+
+
+DROP VIEW
+DROP FUNCTION
+question 15
+ In this question, I created a parameterized view that returns the books bought by each student and then i check if the total number or books minus the books bought by the student equal 3 or not
+CREATE FUNCTION
+ sid  | sname
+------+-------
+ 1021 | Kris
+(1 row)
+
+
+DROP FUNCTION
+question 16
+
+Here I check if the difference between the count of number of students who bought book1 and count of number of students who bought book2 is 0 or not. If it is zero then same number of students bought it.
+CREATE FUNCTION
+  b1  |  b2
+------+------
+ 2003 | 2001
+ 2003 | 2002
+ 2004 | 2002
+ 2004 | 2011
+ 2005 | 2001
+ 2005 | 2002
+ 2005 | 2003
+ 2005 | 2004
+ 2005 | 2006
+ 2005 | 2007
+ 2005 | 2008
+ 2005 | 2009
+ 2005 | 2010
+ 2005 | 2011
+ 2005 | 4001
+ 2005 | 4002
+ 2005 | 4003
+ 2006 | 2007
+ 2006 | 2008
+ 2006 | 2011
+ 2007 | 2011
+ 2009 | 2002
+ 2009 | 2007
+ 2009 | 2011
+ 2010 | 2001
+ 2010 | 2002
+ 2010 | 2003
+ 2010 | 2007
+ 2010 | 2008
+ 2010 | 2009
+ 2010 | 2011
+ 2013 | 2011
+ 3000 | 2002
+ 3000 | 2004
+ 3000 | 2011
+ 4001 | 2001
+ 4001 | 2002
+ 4001 | 2004
+ 4001 | 2008
+ 4001 | 2011
+ 4001 | 4002
+ 4002 | 2001
+ 4002 | 2002
+ 4002 | 2004
+ 4002 | 2008
+ 4002 | 2011
+ 4002 | 4001
+ 4003 | 2002
+ 4003 | 2011
+(49 rows)
+
+
+DROP FUNCTION
+You are now connected to database "postgres" as user "postgres".
+DROP DATABASE
